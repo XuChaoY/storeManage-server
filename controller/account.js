@@ -3,10 +3,10 @@ const { v1: uuidv1 } = require('uuid');
 
 const accoutsList = async (param)=> {
     let sql = `select * from account_book where 1=1 `;
-    // if(name){
-    //     sql += `and name like '%${name}%' `   //拼接搜索作者
-    // }
-    sql += 'order by createtime DESC'
+    if(param.start && param.end){
+        sql += `and createtime > ${param.start} and createtime < ${param.end}`   //拼接搜索作者
+    }
+    sql += ' order by createtime DESC'
     let rows = await exec(sql);
     return rows || []
 }
@@ -17,7 +17,6 @@ const accountsMod = async (obj) =>{
     return rows || []
 }
 const accountsAdd = async (obj) => {
-    console.log(obj)
     let new_uuid = uuidv1();
     let sql = `insert into account_book set id = '${new_uuid}', amount='${obj.amount}', type='${obj.type}', payer='${obj.payer}', payee='${obj.payee}', purpose='${obj.purpose}', tel='${obj.tel}', createtime=${obj.createtime}, modifytime=${obj.createtime}, remark='${obj.remark}';`;
     let rows = await exec(sql);
